@@ -1,0 +1,13 @@
+query Users {
+  users {
+    createdAt
+    id
+    transaction {
+      id
+      categoryId
+      userId
+    }
+    updatedAt
+    username
+  }
+}

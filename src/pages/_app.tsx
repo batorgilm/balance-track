@@ -1,6 +1,14 @@
-import '@/styles/globals.css'
-import type { AppProps } from 'next/app'
+import type { AppProps } from "next/app";
+import { ApolloClient, InMemoryCache, ApolloProvider } from "@apollo/client";
 
+export const apolloClient = new ApolloClient({
+  uri: "https://api-balance-track.vercel.app/api/graphql",
+  cache: new InMemoryCache(),
+});
 export default function App({ Component, pageProps }: AppProps) {
-  return <Component {...pageProps} />
+  return (
+    <ApolloProvider client={apolloClient}>
+      <Component {...pageProps} />;
+    </ApolloProvider>
+  );
 }

@@ -1,0 +1,9 @@
+overwrite: true
+schema: "https://api-balance-track.vercel.app/api/graphql"
+documents: "src/**/*.graphql"
+generates:
+  ./src/generated/index.ts:
+    plugins:
+      - "typescript"
+      - "typescript-operations"
+      - "typescript-react-apollo"

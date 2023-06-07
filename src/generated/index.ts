@@ -21,6 +21,7 @@ export type Scalars = {
 
 export type Categories = {
   __typename?: 'Categories';
+  icon?: Maybe<Scalars['String']['output']>;
   id: Scalars['ID']['output'];
   text?: Maybe<Scalars['String']['output']>;
   transaction?: Maybe<Array<Maybe<Transaction>>>;
@@ -36,6 +37,7 @@ export type Mutation = {
 
 
 export type MutationCreateCategoryArgs = {
+  icon: Scalars['String']['input'];
   text: Scalars['String']['input'];
 };
 
@@ -69,12 +71,19 @@ export type Query = {
 
 
 export type QueryCategoriesArgs = {
+  date?: InputMaybe<Scalars['String']['input']>;
   userId?: InputMaybe<Scalars['String']['input']>;
 };
 
 
 export type QueryCategoryArgs = {
   categoryId?: InputMaybe<Scalars['String']['input']>;
+  userId?: InputMaybe<Scalars['String']['input']>;
+};
+
+
+export type QueryTransactionsArgs = {
+  date?: InputMaybe<Scalars['String']['input']>;
   userId?: InputMaybe<Scalars['String']['input']>;
 };
 
@@ -109,12 +118,155 @@ export type _Service = {
   sdl?: Maybe<Scalars['String']['output']>;
 };
 
+export type CategoriesQueryVariables = Exact<{
+  userId?: InputMaybe<Scalars['String']['input']>;
+  date?: InputMaybe<Scalars['String']['input']>;
+}>;
+
+
+export type CategoriesQuery = { __typename?: 'Query', categories?: Array<{ __typename?: 'Categories', id: string, text?: string | null, icon?: string | null, transaction?: Array<{ __typename?: 'Transaction', amount?: string | null } | null> | null } | null> | null };
+
+export type TransactionsQueryVariables = Exact<{
+  userId?: InputMaybe<Scalars['String']['input']>;
+  date?: InputMaybe<Scalars['String']['input']>;
+}>;
+
+
+export type TransactionsQuery = { __typename?: 'Query', transactions?: Array<{ __typename?: 'Transaction', amount?: string | null, createdAt?: string | null, id: string, category?: { __typename?: 'Categories', icon?: string | null, text?: string | null } | null } | null> | null };
+
+export type RegisterTransactionMutationVariables = Exact<{
+  categoryId: Scalars['String']['input'];
+  userId: Scalars['String']['input'];
+  amount: Scalars['String']['input'];
+}>;
+
+
+export type RegisterTransactionMutation = { __typename?: 'Mutation', registerTransaction?: { __typename?: 'Transaction', id: string } | null };
+
 export type UsersQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type UsersQuery = { __typename?: 'Query', users?: Array<{ __typename?: 'Users', createdAt?: string | null, id: string, updatedAt?: string | null, username?: string | null, transaction?: Array<{ __typename?: 'Transaction', id: string, categoryId?: string | null, userId?: string | null } | null> | null } | null> | null };
 
 
+export const CategoriesDocument = gql`
+    query Categories($userId: String, $date: String) {
+  categories(userId: $userId, date: $date) {
+    id
+    text
+    icon
+    transaction {
+      amount
+    }
+  }
+}
+    `;
+
+/**
+ * __useCategoriesQuery__
+ *
+ * To run a query within a React component, call `useCategoriesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCategoriesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCategoriesQuery({
+ *   variables: {
+ *      userId: // value for 'userId'
+ *      date: // value for 'date'
+ *   },
+ * });
+ */
+export function useCategoriesQuery(baseOptions?: Apollo.QueryHookOptions<CategoriesQuery, CategoriesQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<CategoriesQuery, CategoriesQueryVariables>(CategoriesDocument, options);
+      }
+export function useCategoriesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<CategoriesQuery, CategoriesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<CategoriesQuery, CategoriesQueryVariables>(CategoriesDocument, options);
+        }
+export type CategoriesQueryHookResult = ReturnType<typeof useCategoriesQuery>;
+export type CategoriesLazyQueryHookResult = ReturnType<typeof useCategoriesLazyQuery>;
+export type CategoriesQueryResult = Apollo.QueryResult<CategoriesQuery, CategoriesQueryVariables>;
+export const TransactionsDocument = gql`
+    query Transactions($userId: String, $date: String) {
+  transactions(userId: $userId, date: $date) {
+    amount
+    category {
+      icon
+      text
+    }
+    createdAt
+    id
+  }
+}
+    `;
+
+/**
+ * __useTransactionsQuery__
+ *
+ * To run a query within a React component, call `useTransactionsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useTransactionsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useTransactionsQuery({
+ *   variables: {
+ *      userId: // value for 'userId'
+ *      date: // value for 'date'
+ *   },
+ * });
+ */
+export function useTransactionsQuery(baseOptions?: Apollo.QueryHookOptions<TransactionsQuery, TransactionsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<TransactionsQuery, TransactionsQueryVariables>(TransactionsDocument, options);
+      }
+export function useTransactionsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<TransactionsQuery, TransactionsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<TransactionsQuery, TransactionsQueryVariables>(TransactionsDocument, options);
+        }
+export type TransactionsQueryHookResult = ReturnType<typeof useTransactionsQuery>;
+export type TransactionsLazyQueryHookResult = ReturnType<typeof useTransactionsLazyQuery>;
+export type TransactionsQueryResult = Apollo.QueryResult<TransactionsQuery, TransactionsQueryVariables>;
+export const RegisterTransactionDocument = gql`
+    mutation RegisterTransaction($categoryId: String!, $userId: String!, $amount: String!) {
+  registerTransaction(categoryId: $categoryId, userId: $userId, amount: $amount) {
+    id
+  }
+}
+    `;
+export type RegisterTransactionMutationFn = Apollo.MutationFunction<RegisterTransactionMutation, RegisterTransactionMutationVariables>;
+
+/**
+ * __useRegisterTransactionMutation__
+ *
+ * To run a mutation, you first call `useRegisterTransactionMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRegisterTransactionMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [registerTransactionMutation, { data, loading, error }] = useRegisterTransactionMutation({
+ *   variables: {
+ *      categoryId: // value for 'categoryId'
+ *      userId: // value for 'userId'
+ *      amount: // value for 'amount'
+ *   },
+ * });
+ */
+export function useRegisterTransactionMutation(baseOptions?: Apollo.MutationHookOptions<RegisterTransactionMutation, RegisterTransactionMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<RegisterTransactionMutation, RegisterTransactionMutationVariables>(RegisterTransactionDocument, options);
+      }
+export type RegisterTransactionMutationHookResult = ReturnType<typeof useRegisterTransactionMutation>;
+export type RegisterTransactionMutationResult = Apollo.MutationResult<RegisterTransactionMutation>;
+export type RegisterTransactionMutationOptions = Apollo.BaseMutationOptions<RegisterTransactionMutation, RegisterTransactionMutationVariables>;
 export const UsersDocument = gql`
     query Users {
   users {

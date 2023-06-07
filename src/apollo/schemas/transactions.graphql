@@ -1,0 +1,25 @@
+query Transactions($userId: String, $date: String) {
+  transactions(userId: $userId, date: $date) {
+    amount
+    category {
+      icon
+      text
+    }
+    createdAt
+    id
+  }
+}
+
+mutation RegisterTransaction(
+  $categoryId: String!
+  $userId: String!
+  $amount: String!
+) {
+  registerTransaction(
+    categoryId: $categoryId
+    userId: $userId
+    amount: $amount
+  ) {
+    id
+  }
+}

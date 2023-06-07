@@ -52,7 +52,8 @@ export const getApolloClient = (
     req.cookies;
   }
   const httpLink = createHttpLink({
-    uri: "https://api-balance-track.vercel.app/api/graphql",
+    uri: "http://localhost:4000/api/graphql",
+    // uri: "https://api-balance-track.vercel.app/api/graphql",
   });
 
   const cache = new InMemoryCache().restore(initialState || {});

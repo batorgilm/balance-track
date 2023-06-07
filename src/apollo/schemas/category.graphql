@@ -1,0 +1,10 @@
+query Categories($userId: String, $date: String) {
+  categories(userId: $userId, date: $date) {
+    id
+    text
+    icon
+    transaction {
+      amount
+    }
+  }
+}

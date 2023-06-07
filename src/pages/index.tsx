@@ -1,6 +1,60 @@
+import { Button, Typography } from "@/components";
+import { List } from "@/components/ListItem";
+import {
+  CategoriesDocument,
+  useCategoriesLazyQuery,
+  useTransactionsLazyQuery,
+} from "@/generated";
 import Head from "next/head";
+import { useEffect, useMemo, useState } from "react";
+import { Categories } from "@/generated";
+
+const DATE_RANGE = {
+  week: "7",
+  month: "30",
+};
 
 export default function Home() {
+  const [categories, { data, refetch }] = useCategoriesLazyQuery();
+  const [filter, setFilter] = useState(DATE_RANGE["week"]);
+  const filterHandler = (param: string) => {
+    setFilter(param);
+  };
+
+  const dateHandler = () => {
+    const date = new Date();
+    date.setDate(date.getDate() - Number(filter));
+    return date.toISOString();
+  };
+  const userId = "clictn2qx00000hbndyemqmkp";
+
+  useEffect(() => {
+    categories({
+      variables: {
+        userId,
+        date: dateHandler(),
+      },
+    });
+  }, [filter]);
+
+  const filteredCategories = useMemo(
+    () =>
+      data?.categories?.filter((item) => {
+        return item?.transaction?.length !== 0;
+      }),
+    [data?.categories]
+  );
+
+  const totalExpense = useMemo(
+    () =>
+      filteredCategories?.map((e) =>
+        e?.transaction?.reduce(
+          (acc: number, transaction: any) => acc + parseInt(transaction.amount),
+          0
+        )
+      ),
+    [filteredCategories]
+  );
   return (
     <>
       <Head>
@@ -9,7 +63,31 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main>Hello Balance track</main>
+      <main className="">
+        <div className="my-2">
+          <Typography variant="heading">{totalExpense}₮</Typography>
+          <Typography variant="caption">Total spent this week</Typography>
+        </div>
+        <div className="flex space-x-2 my-4">
+          <Button
+            onClick={() => {
+              filterHandler(DATE_RANGE["week"]);
+            }}
+            variant={filter === "7" ? "outlined" : "text"}
+          >
+            Week
+          </Button>
+          <Button
+            onClick={() => {
+              filterHandler(DATE_RANGE["month"]);
+            }}
+            variant={filter === "30" ? "outlined" : "text"}
+          >
+            Month
+          </Button>
+        </div>
+        <List list={filteredCategories} />
+      </main>
     </>
   );
 }

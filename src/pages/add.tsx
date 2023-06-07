@@ -15,7 +15,8 @@ type AddProps = {
   categories: [Categories];
 };
 const Add = ({ categories }: AddProps) => {
-  const [RegisterTransactionMutation] = useRegisterTransactionMutation();
+  const [RegisterTransactionMutation, { loading, error }] =
+    useRegisterTransactionMutation();
   const [item, setItem] = useState({
     categoryId: "",
     amount: "",
@@ -39,6 +40,13 @@ const Add = ({ categories }: AddProps) => {
     const { value } = e.target;
     setItem((prev) => ({ ...prev, [key]: value }));
   };
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+  if (error) {
+    return <div>{JSON.stringify(error)}</div>;
+  }
 
   return (
     <div className="">

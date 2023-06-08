@@ -58,7 +58,7 @@ export default function Home() {
           <Typography variant="caption">Total spent this week</Typography>
         </section>
         <section className="flex space-x-2 my-4">
-          {map(Object.keys(DATE_RANGE), ({ date, idx }: any) => (
+          {map(Object.keys(DATE_RANGE), (date, idx) => (
             <Button
               key={date + idx}
               onClick={() => {

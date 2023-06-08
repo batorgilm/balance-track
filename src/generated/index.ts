@@ -124,7 +124,7 @@ export type CategoriesQueryVariables = Exact<{
 }>;
 
 
-export type CategoriesQuery = { __typename?: 'Query', categories?: Array<{ __typename?: 'Categories', id: string, text?: string | null, icon?: string | null, transaction?: Array<{ __typename?: 'Transaction', amount?: string | null } | null> | null } | null> | null };
+export type CategoriesQuery = { __typename?: 'Query', categories?: Array<{ __typename?: 'Categories', id: string, text?: string | null, icon?: string | null, transaction?: Array<{ __typename?: 'Transaction', amount?: string | null, createdAt?: string | null } | null> | null } | null> | null };
 
 export type TransactionsQueryVariables = Exact<{
   userId?: InputMaybe<Scalars['String']['input']>;
@@ -157,6 +157,7 @@ export const CategoriesDocument = gql`
     icon
     transaction {
       amount
+      createdAt
     }
   }
 }

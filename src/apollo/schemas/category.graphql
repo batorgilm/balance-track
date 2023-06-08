@@ -5,6 +5,7 @@ query Categories($userId: String, $date: String) {
     icon
     transaction {
       amount
+      createdAt
     }
   }
 }

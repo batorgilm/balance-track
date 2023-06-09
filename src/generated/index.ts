@@ -45,6 +45,7 @@ export type MutationCreateCategoryArgs = {
 export type MutationRegisterTransactionArgs = {
   amount: Scalars['String']['input'];
   categoryId: Scalars['String']['input'];
+  isExpense: Scalars['Boolean']['input'];
   userId: Scalars['String']['input'];
 };
 
@@ -99,6 +100,7 @@ export type Transaction = {
   categoryId?: Maybe<Scalars['String']['output']>;
   createdAt?: Maybe<Scalars['String']['output']>;
   id: Scalars['ID']['output'];
+  isExpense?: Maybe<Scalars['Boolean']['output']>;
   updatedAt?: Maybe<Scalars['String']['output']>;
   user?: Maybe<Users>;
   userId?: Maybe<Scalars['String']['output']>;
@@ -132,12 +134,13 @@ export type TransactionsQueryVariables = Exact<{
 }>;
 
 
-export type TransactionsQuery = { __typename?: 'Query', transactions?: Array<{ __typename?: 'Transaction', amount?: string | null, createdAt?: string | null, id: string, category?: { __typename?: 'Categories', icon?: string | null, text?: string | null } | null } | null> | null };
+export type TransactionsQuery = { __typename?: 'Query', transactions?: Array<{ __typename?: 'Transaction', amount?: string | null, isExpense?: boolean | null, createdAt?: string | null, id: string, category?: { __typename?: 'Categories', icon?: string | null, text?: string | null } | null } | null> | null };
 
 export type RegisterTransactionMutationVariables = Exact<{
   categoryId: Scalars['String']['input'];
   userId: Scalars['String']['input'];
   amount: Scalars['String']['input'];
+  isExpense: Scalars['Boolean']['input'];
 }>;
 
 
@@ -195,6 +198,7 @@ export const TransactionsDocument = gql`
     query Transactions($userId: String, $date: String) {
   transactions(userId: $userId, date: $date) {
     amount
+    isExpense
     category {
       icon
       text
@@ -234,8 +238,13 @@ export type TransactionsQueryHookResult = ReturnType<typeof useTransactionsQuery
 export type TransactionsLazyQueryHookResult = ReturnType<typeof useTransactionsLazyQuery>;
 export type TransactionsQueryResult = Apollo.QueryResult<TransactionsQuery, TransactionsQueryVariables>;
 export const RegisterTransactionDocument = gql`
-    mutation RegisterTransaction($categoryId: String!, $userId: String!, $amount: String!) {
-  registerTransaction(categoryId: $categoryId, userId: $userId, amount: $amount) {
+    mutation RegisterTransaction($categoryId: String!, $userId: String!, $amount: String!, $isExpense: Boolean!) {
+  registerTransaction(
+    categoryId: $categoryId
+    userId: $userId
+    amount: $amount
+    isExpense: $isExpense
+  ) {
     id
   }
 }
@@ -258,6 +267,7 @@ export type RegisterTransactionMutationFn = Apollo.MutationFunction<RegisterTran
  *      categoryId: // value for 'categoryId'
  *      userId: // value for 'userId'
  *      amount: // value for 'amount'
+ *      isExpense: // value for 'isExpense'
  *   },
  * });
  */

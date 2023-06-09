@@ -7,13 +7,13 @@ import { dateHandler } from "@/utils";
 import { map, reduce, startCase } from "lodash";
 
 const DATE_RANGE = {
-  week: "week",
-  month: "month",
+  week: "7 хоног",
+  month: "Сар",
 };
 const userId = "clictn2qx00000hbndyemqmkp";
 
 export default function Home() {
-  const [filterByDate, setFilterByDate] = useState(DATE_RANGE["week"]);
+  const [filterByDate, setFilterByDate] = useState(DATE_RANGE.week);
   const [transaction, { data, loading }] = useTransactionsLazyQuery();
 
   useEffect(() => {
@@ -29,7 +29,11 @@ export default function Home() {
     () =>
       reduce(
         data?.transactions,
-        (sum, transaction) => sum + Number(transaction?.amount),
+        (sum, transaction) =>
+          sum +
+          (transaction?.isExpense
+            ? Number(transaction?.amount) * -1
+            : Number(transaction?.amount)),
         0
       ),
     [data?.transactions]
@@ -55,10 +59,10 @@ export default function Home() {
           ) : (
             <Typography variant="heading">{total}₮</Typography>
           )}
-          <Typography variant="caption">Total spent this week</Typography>
+          <Typography variant="caption">Энэ долоо хоногийн зарлага</Typography>
         </section>
         <section className="flex space-x-2 my-4">
-          {map(Object.keys(DATE_RANGE), (date, idx) => (
+          {map(Object.values(DATE_RANGE), (date, idx) => (
             <Button
               key={date + idx}
               onClick={() => {

@@ -1,5 +1,6 @@
 import { map, startCase } from "lodash";
 import Image from "next/image";
+import { ListSkeleton } from "./ListSkeleton";
 
 interface ListProps {
   list?: any;
@@ -7,22 +8,15 @@ interface ListProps {
 }
 
 interface ListItemProps {
-  img: string;
-  name: string;
-  amount: string;
+  transaction: {
+    category: {
+      icon: string;
+      text: string;
+    };
+    amount: string;
+    isExpense: boolean;
+  };
 }
-
-export const ListSkeleton = () => {
-  return (
-    <div className="w-full flex items-center space-x-4">
-      <div className="w-10 h-10 rounded-full bg-gray-200"></div>
-      <div className="w-full py-6 flex items-end justify-between border-b border-gray-200">
-        <div className="h-2 bg-gray-200 rounded-full w-16"></div>
-        <div className="w-16 h-2 bg-gray-200 rounded-full"></div>
-      </div>
-    </div>
-  );
-};
 
 export const List = (props: ListProps) => {
   const { list, loading } = props;
@@ -35,31 +29,28 @@ export const List = (props: ListProps) => {
           </>
         ))}
       {map(list, (transaction) => (
-        <ListItem
-          key={transaction?.id}
-          img={transaction?.category?.icon}
-          name={transaction?.category?.text}
-          amount={transaction?.amount}
-        />
+        <ListItem key={transaction?.id} transaction={transaction} />
       ))}
     </div>
   );
 };
 
 export const ListItem = (props: ListItemProps) => {
-  const { img, name, amount } = props;
+  const { category, amount, isExpense } = props?.transaction;
   return (
     <div className="w-full flex items-center space-x-4">
       <Image
         className="rounded-full"
-        src={img}
-        alt={img}
+        src={category?.icon}
+        alt={category?.icon}
         width={40}
         height={40}
       />
       <div className="w-full py-4 flex items-end justify-between border-b border-gray-300">
-        <p>{startCase(name)}</p>
-        <p>{amount}₮</p>
+        <p>{startCase(category?.text)}</p>
+        <p className={isExpense ? "text-red-600" : "text-green-600"}>
+          {amount}₮
+        </p>
       </div>
     </div>
   );

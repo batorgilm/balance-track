@@ -1,6 +1,7 @@
 query Transactions($userId: String, $date: String) {
   transactions(userId: $userId, date: $date) {
     amount
+    isExpense
     category {
       icon
       text
@@ -14,11 +15,13 @@ mutation RegisterTransaction(
   $categoryId: String!
   $userId: String!
   $amount: String!
+  $isExpense: Boolean!
 ) {
   registerTransaction(
     categoryId: $categoryId
     userId: $userId
     amount: $amount
+    isExpense: $isExpense
   ) {
     id
   }

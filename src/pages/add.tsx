@@ -1,11 +1,9 @@
 import {
   Categories,
   CategoriesDocument,
-  useCategoriesLazyQuery,
-  useCategoriesQuery,
   useRegisterTransactionMutation,
 } from "@/generated";
-import React, { useEffect, useState } from "react";
+import { useState } from "react";
 import { startCase } from "lodash";
 import { Button } from "@/components";
 import { apolloClient } from "@/apollo";
@@ -20,19 +18,20 @@ const Add = ({ categories }: AddProps) => {
   const [item, setItem] = useState({
     categoryId: "",
     amount: "",
+    isExpense: "",
   });
   const router = useRouter();
   const addItem = async () => {
-    console.log(item);
     const { data } = await RegisterTransactionMutation({
       variables: {
         categoryId: item.categoryId,
         amount: item.amount,
         userId: "clictn2qx00000hbndyemqmkp",
+        isExpense: item.isExpense === "income" ? false : true,
       },
     });
     if (data?.registerTransaction?.id) {
-      router.push("/");
+      router.replace("/");
     }
   };
 
@@ -52,14 +51,14 @@ const Add = ({ categories }: AddProps) => {
     <div className="">
       <form className="flex flex-col space-y-4">
         <label htmlFor="countries" className="block mb-2 text-sm font-medium">
-          Category
+          Төрөл
         </label>
         <select
           id="countries"
           className="px-4 py-2 border rounded-md"
           onChange={(e) => onChange(e, "categoryId")}
         >
-          <option selected>Choose a country</option>
+          <option selected>Choose a category</option>
           {categories?.map((category: Categories) => (
             <option key={category?.id} value={category?.id}>
               {startCase(category?.text ?? "")}
@@ -67,15 +66,26 @@ const Add = ({ categories }: AddProps) => {
           ))}
         </select>
         <label htmlFor="countries" className="block mb-2 text-sm font-medium">
-          Amount
+          Дүн
         </label>
         <input
           placeholder="Amount"
           className="px-4 py-2 border rounded-md"
           onChange={(e) => onChange(e, "amount")}
         />
+        <select
+          id="countries"
+          className="px-4 py-2 border rounded-md"
+          onChange={(e) => onChange(e, "isExpense")}
+        >
+          <option selected value={"expense"}>
+            зарлага
+          </option>
+          <option value={"income"}>орлого</option>
+        </select>
+
         <Button variant="primary" onClick={addItem}>
-          Submit
+          Бүртгэх
         </Button>
       </form>
     </div>

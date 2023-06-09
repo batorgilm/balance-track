@@ -9,3 +9,9 @@ query Categories($userId: String, $date: String) {
     }
   }
 }
+
+mutation CreateCategory($text: String!, $icon: String!) {
+  createCategory(text: $text, icon: $icon) {
+    id
+  }
+}

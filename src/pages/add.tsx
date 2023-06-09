@@ -8,6 +8,7 @@ import { startCase } from "lodash";
 import { Button } from "@/components";
 import { apolloClient } from "@/apollo";
 import { useRouter } from "next/router";
+import Link from "next/link";
 
 type AddProps = {
   categories: [Categories];
@@ -31,7 +32,7 @@ const Add = ({ categories }: AddProps) => {
       },
     });
     if (data?.registerTransaction?.id) {
-      router.replace("/");
+      router.push("/");
     }
   };
 
@@ -50,11 +51,8 @@ const Add = ({ categories }: AddProps) => {
   return (
     <div className="">
       <form className="flex flex-col space-y-4">
-        <label htmlFor="countries" className="block mb-2 text-sm font-medium">
-          Төрөл
-        </label>
+        <label className="block mb-2 text-sm font-medium">Төрөл</label>
         <select
-          id="countries"
           className="px-4 py-2 border rounded-md"
           onChange={(e) => onChange(e, "categoryId")}
         >
@@ -65,11 +63,12 @@ const Add = ({ categories }: AddProps) => {
             </option>
           ))}
         </select>
-        <label htmlFor="countries" className="block mb-2 text-sm font-medium">
-          Дүн
-        </label>
+        <label className="block mb-2 text-sm font-medium">Дүн</label>
         <input
           placeholder="Amount"
+          type="number"
+          pattern="[0-9]*"
+          inputMode="numeric"
           className="px-4 py-2 border rounded-md"
           onChange={(e) => onChange(e, "amount")}
         />
@@ -84,9 +83,14 @@ const Add = ({ categories }: AddProps) => {
           <option value={"income"}>орлого</option>
         </select>
 
-        <Button variant="primary" onClick={addItem}>
-          Бүртгэх
-        </Button>
+        <div className="flex space-x-2">
+          <Button variant="primary" onClick={addItem} sx="w-full">
+            Бүртгэх
+          </Button>
+          <Link href="/addCategory">
+            <Button variant="outlined">Төрөл</Button>
+          </Link>
+        </div>
       </form>
     </div>
   );

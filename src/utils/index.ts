@@ -2,7 +2,9 @@ export const dateHandler = (range: string) => {
   const date = new Date();
   const utcOffset = 8;
 
-  range === "7 хоног" ? date.setUTCDate(date.getDate() - 6) : date.setUTCDate(1);
+  range === "7 хоног"
+    ? date.setUTCDate(date.getDate() - 6)
+    : date.setUTCDate(1);
 
   date.setUTCHours(date.getUTCHours() + utcOffset);
   date.setUTCHours(0, 0, 0, 0);

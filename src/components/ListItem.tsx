@@ -22,12 +22,7 @@ export const List = (props: ListProps) => {
   const { list, loading } = props;
   return (
     <div className="w-full md:w-2/3 lg:w-1/3 ">
-      {loading &&
-        [1, 2, 3, 4].map(() => (
-          <>
-            <ListSkeleton />
-          </>
-        ))}
+      {loading && [1, 2, 3, 4].map((e) => <ListSkeleton key={e} />)}
       {map(list, (transaction) => (
         <ListItem key={transaction?.id} transaction={transaction} />
       ))}

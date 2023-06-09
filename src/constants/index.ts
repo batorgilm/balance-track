@@ -1,11 +1,5 @@
-const transactions = [
-  {
-    userId: "cli01cwm100000hyo87n72j9a",
-    category: {
-      id: "cli01k8dl00040hyo766eitqs",
-      text: "Lunch",
-    },
-    amount: "14000",
-    createdAt: "1684831809816",
-  },
-];
+export const DATE_RANGE = {
+  week: "7 хоног",
+  month: "Сар",
+};
+export const userId = "clictn2qx00000hbndyemqmkp";

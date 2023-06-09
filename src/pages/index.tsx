@@ -5,12 +5,7 @@ import Head from "next/head";
 import { useEffect, useMemo, useState } from "react";
 import { dateHandler } from "@/utils";
 import { map, reduce, startCase } from "lodash";
-
-const DATE_RANGE = {
-  week: "7 хоног",
-  month: "Сар",
-};
-const userId = "clictn2qx00000hbndyemqmkp";
+import { DATE_RANGE, userId } from "@/constants";
 
 export default function Home() {
   const [filterByDate, setFilterByDate] = useState(DATE_RANGE.week);

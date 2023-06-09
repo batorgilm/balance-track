@@ -1,8 +1,7 @@
 import type { AppProps } from "next/app";
-import { ApolloClient, InMemoryCache, ApolloProvider } from "@apollo/client";
+import { ApolloProvider } from "@apollo/client";
 import "../styles/globals.css";
 import "tailwindcss/tailwind.css";
-import Link from "next/link";
 import { apolloClient } from "@/apollo";
 import { Footer } from "@/components/Footer";
 

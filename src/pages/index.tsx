@@ -5,16 +5,26 @@ import Head from "next/head";
 import { useEffect, useMemo, useState } from "react";
 import { dateHandler } from "@/utils";
 import { map, reduce, startCase } from "lodash";
-import { DATE_RANGE, userId } from "@/constants";
+import { DATE_RANGE } from "@/constants";
+import cookies from "js-cookie";
+import { useRouter } from "next/router";
+import Cookies from "js-cookie";
 
 export default function Home() {
   const [filterByDate, setFilterByDate] = useState(DATE_RANGE.week);
   const [transaction, { data, loading }] = useTransactionsLazyQuery();
 
+  const router = useRouter();
+  useEffect(() => {
+    if (!Cookies.get("uid")) {
+      router.push("/login");
+    }
+  }, [router, router.isReady]);
+
   useEffect(() => {
     transaction({
       variables: {
-        userId,
+        userId: cookies.get("uid"),
         date: dateHandler(filterByDate),
       },
     });

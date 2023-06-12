@@ -11,3 +11,15 @@ query Users {
     username
   }
 }
+
+mutation Signup($username: String!, $password: String!) {
+  signup(username: $username, password: $password) {
+    id
+  }
+}
+
+mutation Login($username: String!, $password: String!) {
+  login(username: $username, password: $password) {
+    id
+  }
+}

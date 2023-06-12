@@ -1,14 +1,17 @@
 import { Button } from "@/components";
 import { useCreateCategoryMutation } from "@/generated";
 import { useRouter } from "next/router";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 
 const AddCategory = () => {
   const router = useRouter();
   const [createCategory] = useCreateCategoryMutation();
+  const [loading, setLoading] = useState(false);
   const textRef: any = useRef(null);
   const iconRef: any = useRef(null);
+
   const addItem = async () => {
+    setLoading(true);
     const { value: text } = textRef?.current;
     const { value: icon } = iconRef?.current;
     const category = await createCategory({
@@ -37,7 +40,7 @@ const AddCategory = () => {
         className="px-4 py-2 border rounded-md"
       />
       <Button variant="primary" onClick={addItem} sx="w-full">
-        Бүртгэх
+        {!loading ? "Add category" : "Loading..."}
       </Button>
     </form>
   );

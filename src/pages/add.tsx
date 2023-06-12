@@ -1,6 +1,6 @@
 import {
   Categories,
-  CategoriesDocument,
+  useCategoriesQuery,
   useRegisterTransactionMutation,
 } from "@/generated";
 import { useState } from "react";
@@ -9,25 +9,30 @@ import { Button } from "@/components";
 import { apolloClient } from "@/apollo";
 import { useRouter } from "next/router";
 import Link from "next/link";
+import Cookies from "js-cookie";
 
 type AddProps = {
   categories: [Categories];
 };
-const Add = ({ categories }: AddProps) => {
+const Add = () => {
+  const { data } = useCategoriesQuery();
+
   const [RegisterTransactionMutation, { loading, error }] =
     useRegisterTransactionMutation();
+
   const [item, setItem] = useState({
     categoryId: "",
     amount: "",
     isExpense: "",
   });
+
   const router = useRouter();
   const addItem = async () => {
     const { data } = await RegisterTransactionMutation({
       variables: {
         categoryId: item.categoryId,
         amount: item.amount,
-        userId: "clictn2qx00000hbndyemqmkp",
+        userId: String(Cookies.get("uid")),
         isExpense: item.isExpense === "income" ? false : true,
       },
     });
@@ -51,19 +56,39 @@ const Add = ({ categories }: AddProps) => {
   return (
     <div className="">
       <form className="flex flex-col space-y-4">
-        <label className="block mb-2 text-sm font-medium">Төрөл</label>
-        <select
-          className="px-4 py-2 border rounded-md"
-          onChange={(e) => onChange(e, "categoryId")}
-        >
-          <option selected>Choose a category</option>
-          {categories?.map((category: Categories) => (
-            <option key={category?.id} value={category?.id}>
-              {startCase(category?.text ?? "")}
-            </option>
-          ))}
-        </select>
-        <label className="block mb-2 text-sm font-medium">Дүн</label>
+        <label className="block mb-2 text-sm font-medium">Category</label>
+        <div className="flex space-x-2">
+          <select
+            className="px-4 py-2 border rounded-md w-full"
+            onChange={(e) => onChange(e, "categoryId")}
+          >
+            <option selected>Choose a category</option>
+            {data?.categories?.map((category: any) => (
+              <option key={category?.id} value={category?.id}>
+                {startCase(category?.text ?? "")}
+              </option>
+            ))}
+          </select>
+          <Link href="/addCategory">
+            <Button variant="outlined">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="currentColor"
+                className="w-6 h-6"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M12 4.5v15m7.5-7.5h-15"
+                />
+              </svg>
+            </Button>
+          </Link>
+        </div>
+        <label className="block mb-2 text-sm font-medium">Amount</label>
         <input
           placeholder="Amount"
           type="number"
@@ -72,8 +97,7 @@ const Add = ({ categories }: AddProps) => {
           className="px-4 py-2 border rounded-md"
           onChange={(e) => onChange(e, "amount")}
         />
-        <select
-          id="countries"
+        {/* <select
           className="px-4 py-2 border rounded-md"
           onChange={(e) => onChange(e, "isExpense")}
         >
@@ -81,16 +105,10 @@ const Add = ({ categories }: AddProps) => {
             зарлага
           </option>
           <option value={"income"}>орлого</option>
-        </select>
-
-        <div className="flex space-x-2">
-          <Button variant="primary" onClick={addItem} sx="w-full">
-            Бүртгэх
-          </Button>
-          <Link href="/addCategory">
-            <Button variant="outlined">Төрөл</Button>
-          </Link>
-        </div>
+        </select> */}
+        <Button variant="primary" onClick={addItem} sx="w-full">
+          Add
+        </Button>
       </form>
     </div>
   );
@@ -98,13 +116,13 @@ const Add = ({ categories }: AddProps) => {
 
 export default Add;
 
-export const getServerSideProps = async () => {
-  const { data } = await apolloClient.query({
-    query: CategoriesDocument,
-  });
-  return {
-    props: {
-      categories: data?.categories,
-    },
-  };
-};
+// export const getServerSideProps = async () => {
+//   const { data } = await apolloClient.query({
+//     query: CategoriesDocument,
+//   });
+//   return {
+//     props: {
+//       categories: data?.categories,
+//     },
+//   };
+// };

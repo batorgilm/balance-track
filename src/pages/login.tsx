@@ -1,5 +1,5 @@
 import { Button, Typography } from "@/components";
-import { useSignupMutation } from "@/generated";
+import { useLoginMutation, useSignupMutation } from "@/generated";
 import { useRouter } from "next/router";
 import { useRef, useState } from "react";
 import cookies from "js-cookie";
@@ -8,10 +8,10 @@ const SignUp = () => {
   const router = useRouter();
   const usernameRef: any = useRef();
   const passwordRef: any = useRef();
-  const [signup] = useSignupMutation();
+  const [login] = useLoginMutation();
   const [error, setError]: any = useState("");
   const [loading, setLoading]: any = useState(false);
-  const register = async () => {
+  const signin = async () => {
     setLoading(true);
     const { value: username } = usernameRef.current;
     const { value: password } = passwordRef.current;
@@ -21,13 +21,13 @@ const SignUp = () => {
       return;
     }
     try {
-      const { data } = await signup({
+      const { data } = await login({
         variables: {
           username,
           password,
         },
       });
-      cookies.set("uid", String(data?.signup?.id));
+      cookies.set("uid", String(data?.login?.id));
       router.push("/");
     } catch (error) {
       setError(error);
@@ -38,7 +38,7 @@ const SignUp = () => {
     <div>
       <form className="flex flex-col space-y-2">
         <div className="my-4">
-          <Typography variant="heading">Sign up</Typography>
+          <Typography variant="heading">Log in</Typography>
         </div>
         <label>Username</label>
         <input
@@ -56,13 +56,14 @@ const SignUp = () => {
 
         {error && <p className="text-red-600">Error</p>}
 
-        <Button variant="primary" onClick={register} sx="w-full">
-          {!loading ? "Register" : "Loading..."}
+        <Button variant="primary" onClick={signin} sx="w-full">
+          {!loading ? "Log in" : "Loading..."}
         </Button>
 
-        <Link href="/login" className="mt-6">
-          Existing account?{" "}
-          <span className="font-semibold text-blue-600">Login</span>
+
+        <Link href="/signup" className="mt-6">
+          Create account?{" "}
+          <span className="font-semibold text-blue-600">Sign up</span>
         </Link>
       </form>
     </div>

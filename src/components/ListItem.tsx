@@ -1,5 +1,5 @@
-import { map, startCase } from "lodash";
 import Image from "next/image";
+import { map, startCase } from "lodash";
 import { ListSkeleton } from "./ListSkeleton";
 
 interface ListProps {

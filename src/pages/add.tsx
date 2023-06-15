@@ -1,49 +1,38 @@
 import {
-  Categories,
   useCategoriesQuery,
   useRegisterTransactionMutation,
 } from "@/generated";
-import { useState } from "react";
-import { startCase } from "lodash";
+import { useRef } from "react";
 import { Button } from "@/components";
-import { apolloClient } from "@/apollo";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import Cookies from "js-cookie";
+import { TextField } from "@/components/TextField";
+import { Select } from "@/components/Select";
 
-type AddProps = {
-  categories: [Categories];
-};
 const Add = () => {
-  const { data } = useCategoriesQuery();
+  const { data, loading: categoryLoading } = useCategoriesQuery();
+  const router = useRouter();
+
+  const categoryRef = useRef<HTMLSelectElement>(null);
+  const amountRef = useRef<HTMLInputElement>(null);
 
   const [RegisterTransactionMutation, { loading, error }] =
     useRegisterTransactionMutation();
 
-  const [item, setItem] = useState({
-    categoryId: "",
-    amount: "",
-    isExpense: "",
-  });
-
-  const router = useRouter();
   const addItem = async () => {
+    console.log(categoryRef?.current?.value);
     const { data } = await RegisterTransactionMutation({
       variables: {
-        categoryId: item.categoryId,
-        amount: item.amount,
+        categoryId: categoryRef?.current?.value || "",
+        amount: amountRef?.current?.value || "",
         userId: String(Cookies.get("uid")),
-        isExpense: item.isExpense === "income" ? false : true,
+        isExpense: true,
       },
     });
     if (data?.registerTransaction?.id) {
       router.push("/");
     }
-  };
-
-  const onChange: (e: any, key: string) => void = (e, key) => {
-    const { value } = e.target;
-    setItem((prev) => ({ ...prev, [key]: value }));
   };
 
   if (loading) {
@@ -54,63 +43,45 @@ const Add = () => {
   }
 
   return (
-    <div className="">
-      <form className="flex flex-col space-y-4">
-        <label className="block mb-2 text-sm font-medium">Category</label>
-        <div className="flex space-x-2">
-          <select
-            className="px-4 py-2 border rounded-md w-full"
-            onChange={(e) => onChange(e, "categoryId")}
-          >
-            <option selected>Choose a category</option>
-            {data?.categories?.map((category: any) => (
-              <option key={category?.id} value={category?.id}>
-                {startCase(category?.text ?? "")}
-              </option>
-            ))}
-          </select>
-          <Link href="/addCategory">
-            <Button variant="outlined">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth={1.5}
-                stroke="currentColor"
-                className="w-6 h-6"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M12 4.5v15m7.5-7.5h-15"
-                />
-              </svg>
-            </Button>
-          </Link>
-        </div>
-        <label className="block mb-2 text-sm font-medium">Amount</label>
-        <input
-          placeholder="Amount"
-          type="number"
-          pattern="[0-9]*"
-          inputMode="numeric"
-          className="px-4 py-2 border rounded-md"
-          onChange={(e) => onChange(e, "amount")}
+    <form className="flex flex-col space-y-4">
+      <div className="flex space-x-2 items-end">
+        <Select
+          label="Category"
+          categories={data?.categories}
+          loading={categoryLoading}
         />
-        {/* <select
-          className="px-4 py-2 border rounded-md"
-          onChange={(e) => onChange(e, "isExpense")}
-        >
-          <option selected value={"expense"}>
-            зарлага
-          </option>
-          <option value={"income"}>орлого</option>
-        </select> */}
-        <Button variant="primary" onClick={addItem} sx="w-full">
-          Add
-        </Button>
-      </form>
-    </div>
+        <Link href="/addCategory">
+          <Button variant="outlined">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={1.5}
+              stroke="currentColor"
+              className="w-6 h-6"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M12 4.5v15m7.5-7.5h-15"
+              />
+            </svg>
+          </Button>
+        </Link>
+      </div>
+
+      <TextField
+        label="Amount"
+        placeholder="Amount"
+        ref={amountRef}
+        type="number"
+        pattern="[0-9]*"
+        inputMode="numeric"
+      />
+      <Button variant="primary" onClick={addItem} sx="w-full">
+        Add
+      </Button>
+    </form>
   );
 };
 

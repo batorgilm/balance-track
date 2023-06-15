@@ -1,4 +1,5 @@
 import { Button } from "@/components";
+import { TextField } from "@/components/TextField";
 import { useCreateCategoryMutation } from "@/generated";
 import { useRouter } from "next/router";
 import { useRef, useState } from "react";
@@ -10,6 +11,7 @@ const AddCategory = () => {
   const textRef: any = useRef(null);
   const iconRef: any = useRef(null);
 
+  console.log(textRef)
   const addItem = async () => {
     setLoading(true);
     const { value: text } = textRef?.current;
@@ -27,11 +29,10 @@ const AddCategory = () => {
   };
   return (
     <form className="flex flex-col space-y-2">
-      <label>Category name</label>
-      <input
-        ref={textRef}
+      <TextField
+        label="Category name"
         placeholder="Enter category name"
-        className="px-4 py-2 border rounded-md"
+        ref={textRef}
       />
       <label>Icon</label>
       <input
